@@ -18,7 +18,7 @@ const urlStruct = {
   notFound: jsonHandler.notFound,
 };
 
-/*const handleGet = (request, response, parsedUrl) => {
+/* const handleGet = (request, response, parsedUrl) => {
   if(parsedUrl.pathname ==='/style.css'){
     htmlHandler.getCSS(request, response);
   }
@@ -28,22 +28,22 @@ const urlStruct = {
   else{
     htmlHandler.getIndex(request, response);
   }
-};*/
+}; */
 
 const onRequest = (request, response) => {
   console.log(request.url);
   const parsedUrl = url.parse(request.url);
 
   const params = query.parse(parsedUrl.query);
+  console.log(params);
 
-  if(urlStruct[parsedUrl.pathname]){
-    urlStruct[parsedUrl.pathname](request, response, params);
-  }
-  else{
-    urlStruct.notFound(request, response, params);
+  if (urlStruct[parsedUrl.pathname]) {
+    urlStruct[parsedUrl.pathname](request, response, params, 'application/json');
+  } else {
+    urlStruct.notFound(request, response, params, 'application/json');
   }
 
-  //handleGet(request, response, parsedUrl);
+  // handleGet(request, response, parsedUrl);
 };
 
 http.createServer(onRequest).listen(port);

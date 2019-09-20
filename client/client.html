@@ -9,7 +9,7 @@
     const handleResponse = (xhr) => {
       const content = document.querySelector("#content");
 
-      const obj = JSON.parse(xhr.response);
+      let obj = {};
 
       switch(xhr.status){
         case 200:
@@ -38,15 +38,26 @@
           break;
       }
 
+      if(xhr.type === 'application/json'){
+        obj = JSON.parse(xhr.response);
+      }
+      else if(xhr.type === 'text/xml'){
+        //obj = {};
+        obj.message = xhr.response.message;
+      }
+      else{
+        obj = JSON.parse(xhr.response);
+      }
+
       if(obj.message){
         content.innerHTML += `<p>Message: ${obj.message}</p>`;
       }
     };
 
-    const sendAjax = (url) => {
+    const sendAjax = (url, fileType) => {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', url);
-      xhr.setRequestHeader("Accept", 'application/json');
+      xhr.setRequestHeader("Accept", fileType);
       xhr.onload = () => handleResponse(xhr);
       xhr.send();
     };
@@ -57,7 +68,7 @@
       const sendButton = document.querySelector("#send");
 
       const sendRequest = () => {
-        sendAjax(pageSelector.value);
+        sendAjax(pageSelector.value, typeSelector.value);
       }
 
       sendButton.addEventListener('click', sendRequest);
